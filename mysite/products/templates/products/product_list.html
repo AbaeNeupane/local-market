@@ -1,0 +1,7 @@
+<h2>Products</h2>
+<a href="{% url 'add_product' %}">Add Product</a>
+<ul>
+{% for product in products %}
+<li>{{ product.name }} - ${{ product.price }} <a href="/payments/checkout/{{ product.id }}/">Buy</a></li>
+{% endfor %}
+</ul>
