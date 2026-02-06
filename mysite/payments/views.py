@@ -16,9 +16,10 @@ def create_checkout_session(request, product_id):
     unit_amount_decimal = (product.price * Decimal('100')).to_integral_value(rounding=ROUND_HALF_UP)
     application_fee_decimal = (product.price * Decimal('0.10') * Decimal('100')).to_integral_value(rounding=ROUND_HALF_UP)
 
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
+    # Build the session config
+    session_config = {
+        'payment_method_types': ['card'],
+        'line_items': [{
             'price_data': {
                 'currency': 'usd',
                 'product_data': {'name': product.name},
@@ -26,14 +27,19 @@ def create_checkout_session(request, product_id):
             },
             'quantity': 1,
         }],
-        mode='payment',
-        success_url='http://localhost:8000/payments/success/',
-        cancel_url='http://localhost:8000/payments/cancel/',
-        payment_intent_data={
+        'mode': 'payment',
+        'success_url': 'http://localhost:8000/payments/success/',
+        'cancel_url': 'http://localhost:8000/payments/cancel/',
+    }
+    
+    # Only add fee and transfer if seller has a Stripe Connect account ID
+    if seller_account_id:
+        session_config['payment_intent_data'] = {
             "application_fee_amount": int(application_fee_decimal),
             "transfer_data": {"destination": seller_account_id},
-        },
-    )
+        }
+
+    session = stripe.checkout.Session.create(**session_config)
     return render(request, 'payments/checkout.html', {
         'session_id': session.id,
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY
