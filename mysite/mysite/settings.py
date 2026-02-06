@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -68,5 +71,9 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STRIPE_PUBLIC_KEY = "pk_test_xxx"
-STRIPE_SECRET_KEY = "sk_test_xxx"
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+# Redirect after login (avoid default /accounts/profile/ 404)
+LOGIN_REDIRECT_URL = 'product_list'
+# Where to redirect for @login_required
+LOGIN_URL = 'login'

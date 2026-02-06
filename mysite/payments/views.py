@@ -5,12 +5,16 @@ from products.models import Product
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 import json
+from decimal import Decimal, ROUND_HALF_UP
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def create_checkout_session(request, product_id):
     product = Product.objects.get(id=product_id)
     seller_account_id = product.seller.profile.stripe_account_id
+    # Use Decimal for currency calculations to avoid mixing with floats
+    unit_amount_decimal = (product.price * Decimal('100')).to_integral_value(rounding=ROUND_HALF_UP)
+    application_fee_decimal = (product.price * Decimal('0.10') * Decimal('100')).to_integral_value(rounding=ROUND_HALF_UP)
 
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -18,7 +22,7 @@ def create_checkout_session(request, product_id):
             'price_data': {
                 'currency': 'usd',
                 'product_data': {'name': product.name},
-                'unit_amount': int(product.price * 100),
+                'unit_amount': int(unit_amount_decimal),
             },
             'quantity': 1,
         }],
@@ -26,7 +30,7 @@ def create_checkout_session(request, product_id):
         success_url='http://localhost:8000/payments/success/',
         cancel_url='http://localhost:8000/payments/cancel/',
         payment_intent_data={
-            "application_fee_amount": int(product.price * 100 * 0.10),
+            "application_fee_amount": int(application_fee_decimal),
             "transfer_data": {"destination": seller_account_id},
         },
     )
