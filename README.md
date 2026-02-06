@@ -182,3 +182,4 @@ Features You Can Add
 Made with Django + Stripe Connect 💙
 "# local-market" 
 "# local-market" 
+"# local-market" 
