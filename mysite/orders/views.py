@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from .models import Order
 
-# Create your views here.
-
+@login_required
 def order_list(request):
-    return HttpResponse("Orders list")
+    orders = Order.objects.filter(buyer=request.user)
+    return render(request, 'orders/order_list.html', {'orders': orders})

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.contrib.auth.decorators import login_required
 
@@ -6,6 +6,11 @@ from django.contrib.auth.decorators import login_required
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'products/product_list.html', {'products': products})
+
+@login_required
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    return render(request, 'products/product_detail.html', {'product': product})
 
 @login_required
 def add_product(request):
