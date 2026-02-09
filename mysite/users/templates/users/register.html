@@ -1,6 +1,53 @@
-<h2>Register</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+{% extends 'base.html' %}
+
+{% block title %}Register - Local Market{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="auth-title">
+        <i class="fas fa-user-plus"></i> Create Account
+    </h2>
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {% if field.field.widget.input_type == 'password' %}
+                    <input type="password" class="form-control{% if field.errors %} is-invalid{% endif %}" 
+                           id="{{ field.id_for_label }}" name="{{ field.name }}" required>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}
+                            <small>{{ error }}</small><br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ field.help_text|safe }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success w-100 py-2 fw-bold mt-3">
+            <i class="fas fa-user-plus"></i> Register
+        </button>
+    </form>
+
+    <div class="auth-link">
+        Already have an account? <a href="{% url 'login' %}">Login here</a>
+    </div>
+</div>
+{% endblock %}

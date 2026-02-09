@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Local Market{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-sm mb-4">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="product-detail-image">
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="product-detail-info">
+                <h1>{{ product.name }}</h1>
+                <div class="product-detail-price">${{ product.price }}</div>
+                
+                <div class="product-seller-info">
+                    <h6 class="mb-2"><i class="fas fa-store"></i> Seller Information</h6>
+                    <p class="mb-0">
+                        <strong>{{ product.seller.username }}</strong><br>
+                        <small class="text-muted">Joined since {{ product.seller.date_joined|date:"M Y" }}</small>
+                    </p>
+                </div>
+
+                <div class="product-detail-description">
+                    <h5>Description</h5>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'checkout' product.id %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-shopping-cart"></i> Buy Now
+                    </a>
+                </div>
+
+                <div class="mt-3 p-3 bg-light rounded">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt"></i> Secure payment powered by Stripe
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

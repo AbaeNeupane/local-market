@@ -1,2 +1,29 @@
-<h2>Payment Cancelled!</h2>
-<a href="/products/">Back to products</a>
+{% extends 'base.html' %}
+
+{% block title %}Payment Cancelled - Local Market{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+            <div class="card border-0 shadow">
+                <div class="card-body py-5">
+                    <div style="font-size: 4rem; color: #dc3545; margin-bottom: 1rem;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h2 class="card-title mb-3">Payment Cancelled</h2>
+                    <p class="card-text text-muted mb-4">
+                        Your payment has been cancelled. No charges were made to your account. You can try again or browse other products.
+                    </p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-store"></i> Back to Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
