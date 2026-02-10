@@ -18,7 +18,11 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card product-card">
                         <div class="product-card-img">
-                            <i class="fas fa-box"></i>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-box"></i>
+                            {% endif %}
                         </div>
                         <div class="product-card-body">
                             <h5 class="product-name">{{ product.name }}</h5>

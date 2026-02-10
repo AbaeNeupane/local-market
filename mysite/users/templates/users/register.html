@@ -13,36 +13,80 @@
         
         {% if form.non_field_errors %}
             <div class="alert alert-danger" role="alert">
+                <strong>Error</strong>
                 {% for error in form.non_field_errors %}
-                    {{ error }}
+                    <div>{{ error }}</div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                {% if field.field.widget.input_type == 'password' %}
-                    <input type="password" class="form-control{% if field.errors %} is-invalid{% endif %}" 
-                           id="{{ field.id_for_label }}" name="{{ field.name }}" required>
-                {% else %}
-                    {{ field }}
-                {% endif %}
-                {% if field.errors %}
-                    <div class="invalid-feedback d-block">
-                        {% for error in field.errors %}
-                            <small>{{ error }}</small><br>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% if field.help_text %}
-                    <small class="form-text text-muted d-block mt-1">{{ field.help_text|safe }}</small>
-                {% endif %}
-            </div>
-        {% endfor %}
+        <div class="form-group mb-3">
+            <label for="id_username" class="form-label">{{ form.username.label }}</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.username.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted d-block mt-1">{{ form.username.help_text|safe }}</small>
+        </div>
 
-        <button type="submit" class="btn btn-success w-100 py-2 fw-bold mt-3">
-            <i class="fas fa-user-plus"></i> Register
+        <div class="form-group mb-3">
+            <label for="id_email" class="form-label">{{ form.email.label }}</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="id_password" class="form-label">{{ form.password.label }}</label>
+            <div class="password-wrapper">
+                {{ form.password }}
+                <button type="button" class="password-toggle" onclick="togglePassword('id_password')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            {% if form.password.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.password.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted d-block mt-1">{{ form.password.help_text|safe }}</small>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="id_password2" class="form-label">{{ form.password2.label }}</label>
+            <div class="password-wrapper">
+                {{ form.password2 }}
+                <button type="button" class="password-toggle" onclick="togglePassword('id_password2')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            {% if form.password2.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="id_user_type" class="form-label">{{ form.user_type.label }}</label>
+            {{ form.user_type }}
+            {% if form.user_type.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.user_type.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted d-block mt-1">
+                <i class="fas fa-info-circle"></i> Buyers purchase products. Sellers can list and sell products.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+            <i class="fas fa-user-plus"></i> Create Account
         </button>
     </form>
 
@@ -50,4 +94,22 @@
         Already have an account? <a href="{% url 'login' %}">Login here</a>
     </div>
 </div>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = event.target.closest('.password-toggle');
+    const icon = button.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
 {% endblock %}

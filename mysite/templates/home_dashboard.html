@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Local Market{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Welcome Header -->
+    <div class="welcome-section mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="welcome-title">
+                    <i class="fas fa-wave-hand"></i> Welcome back, {{ user.username }}!
+                </h1>
+                <p class="welcome-subtitle">
+                    Here's what's happening in your Local Market account
+                </p>
+            </div>
+            <div class="col-md-4 text-center text-md-end">
+                <div class="avatar-placeholder">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-5">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ user_products }}</div>
+                    <div class="stat-label">Your Products</div>
+                    <a href="{% url 'add_product' %}" class="stat-link">
+                        <i class="fas fa-plus"></i> Add Product
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ user_orders }}</div>
+                    <div class="stat-label">Your Orders</div>
+                    <a href="{% url 'order_list' %}" class="stat-link">
+                        <i class="fas fa-arrow-right"></i> View Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_products }}</div>
+                    <div class="stat-label">All Products</div>
+                    <a href="{% url 'product_list' %}" class="stat-link">
+                        <i class="fas fa-arrow-right"></i> Browse
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Active Sellers</div>
+                    <a href="{% url 'product_list' %}" class="stat-link">
+                        <i class="fas fa-arrow-right"></i> Discover
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products Section -->
+    {% if recent_products %}
+    <div class="section mb-5">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-sparkles"></i> Recent Products
+        </h2>
+        <div class="row g-4">
+            {% for product in recent_products %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card product-card">
+                        <div class="product-card-img">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-box"></i>
+                            {% endif %}
+                        </div>
+                        <div class="product-card-body">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                            <p class="product-seller">
+                                <i class="fas fa-user"></i> {{ product.seller.username }}
+                            </p>
+                            <p class="product-price">${{ product.price }}</p>
+                            <p class="text-muted small">{{ product.description|truncatewords:15 }}</p>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <a href="{% url 'checkout' product.id %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-shopping-cart"></i> Buy Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-right"></i> View All Products
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="section">
+        <h2 class="section-title mb-4">
+            <i class="fas fa-zap"></i> Quick Actions
+        </h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <a href="{% url 'add_product' %}" class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h5>List a New Product</h5>
+                        <p>Share your products with the community</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a href="{% url 'product_list' %}" class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h5>Browse Products</h5>
+                        <p>Find amazing items from local sellers</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a href="{% url 'order_list' %}" class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h5>View Your Orders</h5>
+                        <p>Track your purchases and order history</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a href="#" class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h5>Account Settings</h5>
+                        <p>Manage your profile and preferences</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Welcome Section */
+.welcome-section {
+    padding: 2rem 0;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.welcome-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.welcome-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+.avatar-placeholder {
+    font-size: 5rem;
+    color: #667eea;
+    opacity: 0.2;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.stat-content {
+    text-align: left;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.stat-link {
+    display: inline-block;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.stat-link:hover {
+    color: #764ba2;
+}
+
+/* Section Title */
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Quick Action Cards */
+.quick-action-card {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.quick-action-icon {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-right: 1.5rem;
+    min-width: 70px;
+    text-align: center;
+}
+
+.quick-action-content {
+    flex: 1;
+}
+
+.quick-action-content h5 {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.quick-action-content p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.quick-action-card i:last-child {
+    color: #ccc;
+    margin-left: auto;
+    font-size: 1.25rem;
+}
+
+.quick-action-card:hover i:last-child {
+    color: #667eea;
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 1.5rem;
+    }
+
+    .avatar-placeholder {
+        font-size: 3rem;
+        margin-top: 1rem;
+    }
+
+    .quick-action-icon {
+        margin-right: 1rem;
+    }
+}
+</style>
+{% endblock %}

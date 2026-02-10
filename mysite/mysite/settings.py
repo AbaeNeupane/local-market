@@ -79,3 +79,9 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 LOGIN_REDIRECT_URL = 'product_list'
 # Where to redirect for @login_required
 LOGIN_URL = 'login'
+
+# Session Configuration
+SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session even after browser closes but for 24 hours
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access

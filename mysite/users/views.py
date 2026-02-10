@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import UserRegisterForm
+from django.contrib.auth.views import LoginView
+from .forms import UserRegisterForm, UserLoginForm
 from .models import Profile
 
 def register(request):
@@ -16,3 +17,12 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+class CustomLoginView(LoginView):
+    form_class = UserLoginForm
+    template_name = 'users/login.html'
+    
+    def get_success_url(self):
+        return self.request.GET.get('next', 'product_list')
+

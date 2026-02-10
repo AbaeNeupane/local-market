@@ -20,8 +20,22 @@ body {
 
 /* Navigation */
 .bg-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Blue gradient for better navbar contrast — change to green if preferred */
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Ensure navbar text and links are visible against the gradient */
+.navbar .nav-link,
+.navbar .dropdown-toggle,
+.navbar-brand {
+    color: #ffffff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover,
+.navbar-brand:hover {
+    color: rgba(255,255,255,0.9) !important;
 }
 
 .navbar-brand {
@@ -173,6 +187,46 @@ body {
 
 .auth-link a:hover {
     color: #764ba2;
+}
+
+/* Password Field with Toggle */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .form-control {
+    flex: 1;
+    padding-right: 2.5rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #667eea;
+    transform: scale(1.1);
+}
+
+.password-toggle:active {
+    transform: scale(0.95);
+}
+
+.password-toggle i {
+    pointer-events: none;
 }
 
 /* Product Detail */
