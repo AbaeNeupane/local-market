@@ -3,3 +3,4 @@ media/
 __pycache__/
 .env
 db.sqlite3
+UI_Summary

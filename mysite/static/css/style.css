@@ -20,8 +20,8 @@ body {
 
 /* Navigation */
 .bg-gradient {
-    /* Blue gradient for better navbar contrast — change to green if preferred */
-    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    /* Green gradient for navbar */
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
