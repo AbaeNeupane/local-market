@@ -1,0 +1,34 @@
+{% extends "notifications/base_email.html" %}
+{% block content %}
+<div class="body">
+  <div class="greeting">{{ status_message }}</div>
+  <p class="subtitle">Your order #{{ order.id }} for <strong style="color:#fff">{{ product.name }}</strong> has been updated.</p>
+  <div class="order-box">
+    <div class="order-row"><span class="order-label">Order ID</span><span class="order-value">#{{ order.id }}</span></div>
+    <div class="order-row"><span class="order-label">Product</span><span class="order-value">{{ product.name }}</span></div>
+    <div class="order-row">
+      <span class="order-label">Previous Status</span>
+      <span class="order-value"><span class="status-pill status-pending">{{ old_status }}</span></span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">New Status</span>
+      <span class="order-value">
+        {% if new_status == 'shipped' or new_status == 'out_for_delivery' %}
+          <span class="status-pill status-shipped">{{ new_status }}</span>
+        {% elif new_status == 'delivered' or new_status == 'completed' %}
+          <span class="status-pill status-completed">{{ new_status }}</span>
+        {% elif new_status == 'cancelled' %}
+          <span class="status-pill status-cancelled">{{ new_status }}</span>
+        {% else %}
+          <span class="status-pill status-pending">{{ new_status }}</span>
+        {% endif %}
+      </span>
+    </div>
+    {% if order.tracking.tracking_number %}
+    <div class="order-row"><span class="order-label">Tracking #</span><span class="order-value">{{ order.tracking.tracking_number }}</span></div>
+    <div class="order-row"><span class="order-label">Courier</span><span class="order-value">{{ order.tracking.get_courier_display }}</span></div>
+    {% endif %}
+  </div>
+  <a href="{{ frontend_url }}/orders" class="btn">View Order Status →</a>
+</div>
+{% endblock %}

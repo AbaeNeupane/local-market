@@ -1,0 +1,19 @@
+{% extends "notifications/base_email.html" %}
+{% block content %}
+<div class="body">
+  <div class="greeting">🛍️ You made a sale!</div>
+  <p class="subtitle">Great news {{ seller.first_name|default:seller.username }} — someone just bought your product on Local Market.</p>
+  <div class="order-box">
+    <div class="order-row"><span class="order-label">Order ID</span><span class="order-value">#{{ order.id }}</span></div>
+    <div class="order-row"><span class="order-label">Product</span><span class="order-value">{{ product.name }}</span></div>
+    <div class="order-row"><span class="order-label">Buyer</span><span class="order-value">{{ buyer.username }}</span></div>
+    <div class="order-row"><span class="order-label">Quantity</span><span class="order-value">{{ order.quantity }}</span></div>
+    <div class="order-row"><span class="order-label">Order Total</span><span class="order-value">${{ order.amount }}</span></div>
+    <div class="order-row"><span class="order-label">Platform Fee (10%)</span><span class="order-value">-${{ order.platform_fee }}</span></div>
+    <div class="order-row"><span class="order-label">Your Earnings</span><span class="order-value" style="color:#4ade80">${{ order.seller_amount }}</span></div>
+    <div class="order-row"><span class="order-label">Payment Method</span><span class="order-value">{{ order.get_payment_method_display }}</span></div>
+  </div>
+  <p style="color:#9ca3af;font-size:14px;">Please process and ship this order as soon as possible. Update the order status in your dashboard.</p>
+  <a href="{{ frontend_url }}/dashboard" class="btn">Go to Dashboard →</a>
+</div>
+{% endblock %}

@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - Local Market{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                <h1 class="hero-title">
+                    Welcome to <span class="text-gradient">Local Market</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Connect with local sellers and buyers. Buy and sell amazing products in your community.
+                </p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-center justify-content-lg-start">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-image">
+                    <i class="fas fa-shopping-bags"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_products }}</div>
+                    <div class="stat-label">Active Products</div>
+                    <p class="stat-desc">Quality items listed by trusted sellers</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_sellers }}</div>
+                    <div class="stat-label">Local Sellers</div>
+                    <p class="stat-desc">Supporting community businesses</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Secure Payments</div>
+                    <p class="stat-desc">Protected by Stripe</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Local Market?</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h5>Secure Transactions</h5>
+                    <p>All payments are protected with Stripe Connect for maximum security</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5>Community Focused</h5>
+                    <p>Connect directly with local sellers and support your community</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h5>Easy to Use</h5>
+                    <p>Simple and intuitive interface for buying and selling</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5>24/7 Support</h5>
+                    <p>We're here to help you with any questions or concerns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="row g-4">
+            {% for product in featured_products %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card product-card">
+                        <div class="product-card-img">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-box"></i>
+                            {% endif %}
+                        </div>
+                        <div class="product-card-body">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                            <p class="product-seller">
+                                <i class="fas fa-user"></i> {{ product.seller.username }}
+                            </p>
+                            <p class="product-price">${{ product.price }}</p>
+                            <p class="text-muted small">{{ product.description|truncatewords:15 }}</p>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'login' %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-shopping-cart"></i> Login to Buy
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-right"></i> View All Products
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2>Ready to Join the Local Market Community?</h2>
+                <p>Start buying from local sellers or list your products today!</p>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <a href="{% url 'register' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Hero Section */
+.hero-section {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.hero-image {
+    font-size: 15rem;
+    opacity: 0.1;
+    margin: 0;
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.stat-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.stat-desc {
+    color: #666;
+    margin: 0;
+}
+
+/* Features Section */
+.features-section {
+    padding: 4rem 0;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.feature-card h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.feature-card p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Featured Products Section */
+.featured-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    margin: 4rem 0;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.cta-section p {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-image {
+        font-size: 8rem;
+    }
+
+    .cta-section {
+        text-align: center;
+    }
+
+    .cta-section .text-lg-end {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+}
+</style>
+{% endblock %}

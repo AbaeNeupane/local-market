@@ -1,0 +1,18 @@
+{% extends "notifications/base_email.html" %}
+{% block content %}
+<div class="body">
+  <div class="greeting">✅ Order Confirmed, {{ user.first_name|default:user.username }}!</div>
+  <p class="subtitle">Your payment was successful and your order has been placed. The seller will process it shortly.</p>
+  <div class="order-box">
+    <div class="order-row"><span class="order-label">Order ID</span><span class="order-value">#{{ order.id }}</span></div>
+    <div class="order-row"><span class="order-label">Product</span><span class="order-value">{{ product.name }}</span></div>
+    <div class="order-row"><span class="order-label">Quantity</span><span class="order-value">{{ order.quantity }}</span></div>
+    <div class="order-row"><span class="order-label">Total Paid</span><span class="order-value">${{ order.amount }}</span></div>
+    <div class="order-row"><span class="order-label">Payment</span><span class="order-value">{{ order.get_payment_method_display }}</span></div>
+    <div class="order-row"><span class="order-label">Seller</span><span class="order-value">{{ product.seller.username }}</span></div>
+    <div class="order-row"><span class="order-label">Status</span><span class="order-value"><span class="status-pill status-completed">Confirmed</span></span></div>
+  </div>
+  <p style="color:#9ca3af;font-size:14px;">You'll receive another email when the seller ships your item.</p>
+  <a href="{{ frontend_url }}/orders" class="btn">Track Your Order →</a>
+</div>
+{% endblock %}

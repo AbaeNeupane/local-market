@@ -1,0 +1,25 @@
+{% extends "notifications/base_email.html" %}
+{% block content %}
+<div class="body">
+  <div class="greeting">👋 Welcome to Local Market, {{ user.first_name|default:user.username }}!</div>
+  <p class="subtitle">You've joined Nepal's community marketplace. Here's how to get started:</p>
+  {% if user_type == 'seller' %}
+  <div class="order-box">
+    <div style="font-weight:700;color:#fff;margin-bottom:12px;">🏪 You're a Seller — here's your checklist:</div>
+    <div class="order-row"><span>1.</span><span class="order-value">Complete your profile</span></div>
+    <div class="order-row"><span>2.</span><span class="order-value">Connect your Stripe account to receive payments</span></div>
+    <div class="order-row"><span>3.</span><span class="order-value">List your first product</span></div>
+    <div class="order-row"><span>4.</span><span class="order-value">Share your listings and start selling!</span></div>
+  </div>
+  <a href="{{ frontend_url }}/dashboard" class="btn">Set Up Your Store →</a>
+  {% else %}
+  <div class="order-box">
+    <div style="font-weight:700;color:#fff;margin-bottom:12px;">🛍️ You're a Buyer — ready to shop:</div>
+    <div class="order-row"><span>✓</span><span class="order-value">Browse local products</span></div>
+    <div class="order-row"><span>✓</span><span class="order-value">Pay with eSewa, Card, or PayPal</span></div>
+    <div class="order-row"><span>✓</span><span class="order-value">Track your orders in real time</span></div>
+  </div>
+  <a href="{{ frontend_url }}/products" class="btn">Start Shopping →</a>
+  {% endif %}
+</div>
+{% endblock %}

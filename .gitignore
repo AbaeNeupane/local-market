@@ -1,0 +1,11 @@
+media/
+.venv/
+__pycache__/
+.env
+db.sqlite3
+UI_Summary
+*.log
+*.pot
+*.pyc
+NEW_FEATURES.md
+SETUP.md

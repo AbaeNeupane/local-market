@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+  body { margin:0; padding:0; background:#0f0f0f; font-family:'Helvetica Neue',Arial,sans-serif; color:#e5e5e5; }
+  .wrapper { max-width:600px; margin:0 auto; padding:32px 16px; }
+  .card { background:#1a1a1a; border:1px solid #2a2a2a; border-radius:16px; overflow:hidden; }
+  .header { background:linear-gradient(135deg,#7c3aed,#db2777); padding:32px; text-align:center; }
+  .header-logo { font-size:24px; font-weight:800; color:#fff; letter-spacing:-0.5px; }
+  .header-icon { font-size:48px; margin-bottom:12px; display:block; }
+  .body { padding:32px; }
+  .greeting { font-size:22px; font-weight:700; margin-bottom:8px; color:#fff; }
+  .subtitle { color:#9ca3af; font-size:15px; margin-bottom:28px; line-height:1.6; }
+  .order-box { background:#111; border:1px solid #2a2a2a; border-radius:12px; padding:20px; margin:20px 0; }
+  .order-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a2a2a; font-size:14px; }
+  .order-row:last-child { border-bottom:none; }
+  .order-label { color:#9ca3af; }
+  .order-value { color:#fff; font-weight:600; }
+  .btn { display:inline-block; background:#7c3aed; color:#fff; text-decoration:none; padding:14px 32px; border-radius:10px; font-weight:700; font-size:15px; margin:20px 0; }
+  .status-pill { display:inline-block; padding:4px 14px; border-radius:20px; font-size:13px; font-weight:600; }
+  .status-completed { background:#052e16; color:#4ade80; }
+  .status-shipped { background:#0c1a4a; color:#60a5fa; }
+  .status-pending { background:#2d1b00; color:#fbbf24; }
+  .status-cancelled { background:#1f1f1f; color:#9ca3af; }
+  .timeline { margin:20px 0; }
+  .timeline-item { display:flex; gap:16px; margin-bottom:20px; }
+  .timeline-dot { width:12px; height:12px; background:#7c3aed; border-radius:50%; margin-top:4px; flex-shrink:0; }
+  .timeline-dot.done { background:#4ade80; }
+  .timeline-content { flex:1; }
+  .timeline-title { font-weight:600; font-size:14px; color:#fff; }
+  .timeline-time { font-size:12px; color:#6b7280; margin-top:2px; }
+  .footer { text-align:center; padding:24px; color:#4b5563; font-size:13px; border-top:1px solid #1f1f1f; }
+  .footer a { color:#7c3aed; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <div class="header-logo">🏪 Local Market</div>
+    </div>
+    {% block content %}{% endblock %}
+    <div class="footer">
+      <p>© 2025 Local Market · Nepal's Community Marketplace</p>
+      <p><a href="{{ frontend_url }}">Visit LocalMarket</a> · <a href="{{ frontend_url }}/orders">My Orders</a></p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

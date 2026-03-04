@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><style>
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;margin:0;padding:20px}
+.wrap{max-width:560px;margin:0 auto;background:#1a1a1a;border-radius:16px;overflow:hidden;border:1px solid #2a2a2a}
+.header{background:linear-gradient(135deg,#1e3a5f,#1d4ed8);padding:32px;text-align:center}
+.header h1{color:#fff;margin:0;font-size:24px}
+.header p{color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px}
+.body{padding:32px}
+.status-flow{display:flex;align-items:center;justify-content:center;gap:12px;margin:24px 0;flex-wrap:wrap}
+.status-old{background:#2a2a2a;color:#888;padding:8px 16px;border-radius:8px;font-size:13px}
+.arrow{color:#555;font-size:20px}
+.status-new{background:#1e3a5f;color:#60a5fa;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid #1d4ed8}
+.details{background:#111;border-radius:12px;padding:20px;margin:20px 0}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #222;font-size:14px}
+.detail-row:last-child{border:none}
+.detail-label{color:#888}.detail-value{color:#fff;font-weight:500}
+.btn{display:inline-block;background:#1d4ed8;color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;font-size:15px;margin:20px 0}
+.footer{text-align:center;padding:20px;color:#555;font-size:12px;border-top:1px solid #222}
+h2{color:#fff;font-size:18px;margin:0 0 8px}
+p{color:#aaa;font-size:14px;line-height:1.6;margin:0 0 12px}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>📦 Order Update</h1>
+    <p>Order #{{ order.id }} status has changed</p>
+  </div>
+  <div class="body">
+    <h2>Status Changed</h2>
+    <div class="status-flow">
+      <span class="status-old">{{ old_status }}</span>
+      <span class="arrow">→</span>
+      <span class="status-new">{{ new_status }}</span>
+    </div>
+    <div class="details">
+      <div class="detail-row"><span class="detail-label">Order</span><span class="detail-value">#{{ order.id }}</span></div>
+      <div class="detail-row"><span class="detail-label">Product</span><span class="detail-value">{{ order.product.name }}</span></div>
+      {% if order.tracking_number %}<div class="detail-row"><span class="detail-label">Tracking #</span><span class="detail-value">{{ order.tracking_number }}</span></div>{% endif %}
+      {% if order.carrier %}<div class="detail-row"><span class="detail-label">Carrier</span><span class="detail-value">{{ order.carrier }}</span></div>{% endif %}
+      {% if order.estimated_delivery %}<div class="detail-row"><span class="detail-label">Est. Delivery</span><span class="detail-value">{{ order.estimated_delivery|date:"N j, Y" }}</span></div>{% endif %}
+    </div>
+    <center><a href="{{ frontend_url }}/orders" class="btn">Track Order</a></center>
+  </div>
+  <div class="footer">© Local Market</div>
+</div>
+</body></html>

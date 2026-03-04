@@ -1,0 +1,14 @@
+{% extends "notifications/base_email.html" %}
+{% block content %}
+<div class="body">
+  <div class="greeting">🎉 Stripe Account Connected!</div>
+  <p class="subtitle">Congratulations {{ seller.first_name|default:seller.username }}! Your Stripe account is now linked to Local Market. You'll receive payouts directly to your bank after each sale.</p>
+  <div class="order-box">
+    <div class="order-row"><span class="order-label">Platform Commission</span><span class="order-value">10% per sale</span></div>
+    <div class="order-row"><span class="order-label">Payout Schedule</span><span class="order-value">Automatic via Stripe</span></div>
+    <div class="order-row"><span class="order-label">Supported Currencies</span><span class="order-value">USD, NPR</span></div>
+  </div>
+  <p style="color:#9ca3af;font-size:14px;">You can manage your payout settings anytime from your Stripe Express dashboard.</p>
+  <a href="{{ frontend_url }}/dashboard" class="btn">Go to Dashboard →</a>
+</div>
+{% endblock %}

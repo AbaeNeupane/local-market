@@ -1,0 +1,225 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div id="lm-dashboard">
+
+  <!-- Stats Row -->
+  <div class="lm-stats-grid">
+    <div class="lm-stat lm-stat--purple">
+      <div class="lm-stat__icon">👥</div>
+      <div class="lm-stat__value" id="stat-users">—</div>
+      <div class="lm-stat__label">Total Users</div>
+      <div class="lm-stat__sub" id="stat-users-sub"></div>
+    </div>
+    <div class="lm-stat lm-stat--blue">
+      <div class="lm-stat__icon">📦</div>
+      <div class="lm-stat__value" id="stat-products">—</div>
+      <div class="lm-stat__label">Products Listed</div>
+    </div>
+    <div class="lm-stat lm-stat--green">
+      <div class="lm-stat__icon">🛍️</div>
+      <div class="lm-stat__value" id="stat-orders">—</div>
+      <div class="lm-stat__label">Total Orders</div>
+    </div>
+    <div class="lm-stat lm-stat--orange">
+      <div class="lm-stat__icon">💰</div>
+      <div class="lm-stat__value" id="stat-revenue">—</div>
+      <div class="lm-stat__label">Platform Revenue</div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="lm-charts-grid">
+    <div class="lm-chart-card">
+      <h3 class="lm-chart-title">📈 Orders by Status</h3>
+      <canvas id="chart-orders-status" height="220"></canvas>
+    </div>
+    <div class="lm-chart-card">
+      <h3 class="lm-chart-title">💳 Revenue by Payment Method</h3>
+      <canvas id="chart-payment-methods" height="220"></canvas>
+    </div>
+  </div>
+
+  <!-- Recent Orders Table -->
+  <div class="lm-table-card">
+    <h3 class="lm-chart-title">🕐 Recent Orders</h3>
+    <table class="lm-table" id="recent-orders-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Buyer</th><th>Product</th><th>Amount</th>
+          <th>Payment</th><th>Status</th><th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="recent-orders-body">
+        <tr><td colspan="7" style="text-align:center;color:#888">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Top Sellers -->
+  <div class="lm-table-card">
+    <h3 class="lm-chart-title">🏆 Top Sellers</h3>
+    <div id="top-sellers-list" class="lm-sellers-grid">
+      <p style="color:#888">Loading...</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Inline CSS -->
+<style>
+#lm-dashboard { padding: 20px 0; font-family: 'Segoe UI', sans-serif; }
+.lm-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.lm-stat { background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,.07); position:relative; overflow:hidden; }
+.lm-stat::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+.lm-stat--purple::before { background: linear-gradient(90deg,#7c3aed,#a855f7); }
+.lm-stat--blue::before   { background: linear-gradient(90deg,#2563eb,#60a5fa); }
+.lm-stat--green::before  { background: linear-gradient(90deg,#059669,#34d399); }
+.lm-stat--orange::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
+.lm-stat__icon { font-size:28px; margin-bottom:8px; }
+.lm-stat__value { font-size:28px; font-weight:800; color:#111; line-height:1; }
+.lm-stat__label { font-size:13px; color:#6b7280; margin-top:4px; font-weight:500; }
+.lm-stat__sub { font-size:12px; color:#9ca3af; margin-top:2px; }
+.lm-charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.lm-chart-card, .lm-table-card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,.07); margin-bottom:16px; }
+.lm-chart-title { font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; }
+.lm-table { width:100%; border-collapse:collapse; font-size:13px; }
+.lm-table th { background:#f9fafb; padding:10px 12px; text-align:left; font-weight:600; color:#6b7280; border-bottom:1px solid #e5e7eb; }
+.lm-table td { padding:10px 12px; border-bottom:1px solid #f3f4f6; color:#374151; }
+.lm-table tr:hover td { background:#f9fafb; }
+.lm-badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-completed { background:#d1fae5; color:#065f46; }
+.badge-pending   { background:#fef3c7; color:#92400e; }
+.badge-failed    { background:#fee2e2; color:#991b1b; }
+.badge-cancelled { background:#f3f4f6; color:#6b7280; }
+.badge-shipped   { background:#dbeafe; color:#1e40af; }
+.lm-sellers-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.lm-seller-card { border:1px solid #e5e7eb; border-radius:10px; padding:14px; }
+.lm-seller-name { font-weight:700; color:#111; font-size:14px; margin-bottom:4px; }
+.lm-seller-stats { font-size:12px; color:#6b7280; }
+.lm-seller-revenue { font-size:16px; font-weight:800; color:#059669; margin-top:4px; }
+@media(max-width:768px) {
+  .lm-stats-grid { grid-template-columns:1fr 1fr; }
+  .lm-charts-grid { grid-template-columns:1fr; }
+}
+</style>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+const STATUS_COLORS = {
+  completed: '#10b981', pending: '#f59e0b', processing: '#3b82f6',
+  cancelled: '#9ca3af', failed: '#ef4444', refunded: '#8b5cf6',
+};
+
+async function loadDashboard() {
+  try {
+    const res = await fetch('/api/admin/stats/', {
+      headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Stats
+    document.getElementById('stat-users').textContent = data.total_users;
+    document.getElementById('stat-users-sub').textContent =
+      `${data.total_sellers} sellers · ${data.total_buyers} buyers`;
+    document.getElementById('stat-products').textContent = data.total_products;
+    document.getElementById('stat-orders').textContent = data.total_orders;
+    document.getElementById('stat-revenue').textContent = '$' + (data.platform_revenue || 0).toFixed(2);
+
+    // Orders by status chart
+    if (data.orders_by_status) {
+      new Chart(document.getElementById('chart-orders-status'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(data.orders_by_status).map(s => s.charAt(0).toUpperCase()+s.slice(1)),
+          datasets: [{
+            data: Object.values(data.orders_by_status),
+            backgroundColor: Object.keys(data.orders_by_status).map(s => STATUS_COLORS[s] || '#6b7280'),
+            borderWidth: 2, borderColor: '#fff',
+          }]
+        },
+        options: { plugins: { legend: { position: 'right' } }, cutout: '65%' }
+      });
+    }
+
+    // Payment methods chart
+    if (data.revenue_by_payment) {
+      new Chart(document.getElementById('chart-payment-methods'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data.revenue_by_payment).map(s => s.toUpperCase()),
+          datasets: [{
+            label: 'Revenue ($)',
+            data: Object.values(data.revenue_by_payment),
+            backgroundColor: ['#7c3aed','#059669','#2563eb','#d97706'],
+            borderRadius: 6,
+          }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    // Recent orders table
+    if (data.recent_orders) {
+      const tbody = document.getElementById('recent-orders-body');
+      tbody.innerHTML = data.recent_orders.map(o => `
+        <tr>
+          <td><a href="/admin/orders/order/${o.id}/change/">#${o.id}</a></td>
+          <td>${o.buyer_name}</td>
+          <td>${o.product_name}</td>
+          <td><strong>$${o.amount}</strong></td>
+          <td>${o.payment_method}</td>
+          <td><span class="lm-badge badge-${o.status}">${o.status}</span></td>
+          <td>${new Date(o.created_at).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Top sellers
+    if (data.top_sellers) {
+      document.getElementById('top-sellers-list').innerHTML = data.top_sellers.map((s,i) => `
+        <div class="lm-seller-card">
+          <div class="lm-seller-name">${['🥇','🥈','🥉'][i]||'·'} ${s.username}</div>
+          <div class="lm-seller-stats">${s.total_sales} sales · ${s.total_products} products</div>
+          <div class="lm-seller-revenue">$${s.total_revenue.toFixed(2)}</div>
+        </div>
+      `).join('');
+    }
+
+  } catch(e) { console.error('Dashboard load error', e); }
+}
+
+function getCookie(name) {
+  let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
+}
+
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+
+<!-- Default Django admin modules below -->
+{% if app_list %}
+<div style="margin-top:32px">
+  <h2 style="font-size:18px;font-weight:700;color:#374151;margin-bottom:16px;">📋 Quick Access</h2>
+  {% for app in app_list %}
+    <div style="margin-bottom:16px;">
+      <h3 style="font-size:14px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">{{ app.name }}</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        {% for model in app.models %}
+          {% if model.admin_url %}
+          <a href="{{ model.admin_url }}" style="padding:6px 14px;background:#f3f4f6;border-radius:8px;font-size:13px;color:#374151;text-decoration:none;border:1px solid #e5e7eb;">
+            {{ model.name }}
+            {% if model.add_url %}<a href="{{ model.add_url }}" style="color:#7c3aed;margin-left:4px;">+</a>{% endif %}
+          </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
