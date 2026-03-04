@@ -9,3 +9,14 @@ UI_Summary
 *.pyc
 NEW_FEATURES.md
 SETUP.md
+.vscode/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+mysite/static/
+mysite/media/
+mysite/__pycache__/
+mysite/db.sqlite3
+mysite/env/
