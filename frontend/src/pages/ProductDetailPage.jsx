@@ -4,12 +4,13 @@ import api from '../hooks/useApi'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
 import { ArrowLeft, ShoppingCart, Edit, Trash2, Eye, Package, User, MapPin } from 'lucide-react'
+import ReviewsSection from '../components/ReviewsSection'
+import StarRating from '../components/StarRating'
 
 function PaymentModal({ product, onClose }) {
   const [method, setMethod] = useState('stripe')
   const [qty, setQty] = useState(1)
   const [loading, setLoading] = useState(false)
-  const { user } = useAuth()
 
   const paymentMethods = [
     { id: 'stripe', label: 'Card (Stripe)', desc: 'Visa, Mastercard, etc.', flag: '💳', currency: 'USD' },
@@ -23,6 +24,7 @@ function PaymentModal({ product, onClose }) {
       if (method === 'stripe') {
         const res = await api.post(`/api/payments/stripe/checkout/${product.id}/`, { quantity: qty })
         window.location.href = res.data.checkout_url
+
       } else if (method === 'esewa') {
         const res = await api.post(`/api/payments/esewa/init/${product.id}/`, { quantity: qty })
         const { esewa_url, form_data } = res.data
@@ -36,9 +38,10 @@ function PaymentModal({ product, onClose }) {
         })
         document.body.appendChild(form)
         form.submit()
-      } else {
-        toast('PayPal integration coming soon!', { icon: '🔧' })
-        setLoading(false)
+
+      } else if (method === 'paypal') {
+        const res = await api.post(`/api/payments/paypal/create/${product.id}/`, { quantity: qty })
+        window.location.href = res.data.approval_url
       }
     } catch (err) {
       toast.error(err.response?.data?.error || 'Payment failed')
@@ -53,7 +56,7 @@ function PaymentModal({ product, onClose }) {
       <div className="card w-full max-w-md overflow-hidden animate-fade-up">
         <div className="p-5 border-b border-white/5 flex items-center justify-between">
           <h3 className="font-display font-bold text-lg">Complete Purchase</h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-white">✕</button>
+          <button onClick={onClose} className="text-gray-500 hover:text-white text-xl leading-none">✕</button>
         </div>
         <div className="p-5 space-y-4">
           {/* Product Summary */}
@@ -69,9 +72,9 @@ function PaymentModal({ product, onClose }) {
           <div>
             <label className="label">Quantity</label>
             <div className="flex items-center gap-3">
-              <button onClick={()=>setQty(Math.max(1,qty-1))} className="w-9 h-9 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center font-bold">-</button>
+              <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-9 h-9 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center font-bold">-</button>
               <span className="font-bold text-lg w-8 text-center">{qty}</span>
-              <button onClick={()=>setQty(Math.min(product.stock,qty+1))} className="w-9 h-9 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center font-bold">+</button>
+              <button onClick={() => setQty(Math.min(product.stock, qty + 1))} className="w-9 h-9 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center font-bold">+</button>
               <span className="text-xs text-gray-500">/ {product.stock} in stock</span>
             </div>
           </div>
@@ -81,8 +84,8 @@ function PaymentModal({ product, onClose }) {
             <label className="label">Payment Method</label>
             <div className="space-y-2">
               {paymentMethods.map(m => (
-                <button key={m.id} onClick={()=>setMethod(m.id)}
-                  className={`w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all ${method===m.id?'border-brand-500 bg-brand-900/20':'border-white/10 hover:border-white/20'}`}>
+                <button key={m.id} onClick={() => setMethod(m.id)}
+                  className={`w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all ${method === m.id ? 'border-brand-500 bg-brand-900/20' : 'border-white/10 hover:border-white/20'}`}>
                   <div className="flex items-center gap-3">
                     <span className="text-xl">{m.flag}</span>
                     <div>
@@ -103,7 +106,7 @@ function PaymentModal({ product, onClose }) {
           </div>
 
           <button onClick={handlePay} disabled={loading} className="btn-primary w-full py-3.5 justify-center flex text-base">
-            {loading ? 'Processing...' : `Pay $${total} via ${method}`}
+            {loading ? 'Processing...' : `Pay $${total} via ${method === 'stripe' ? 'Card' : method === 'esewa' ? 'eSewa' : 'PayPal'}`}
           </button>
         </div>
       </div>
@@ -118,9 +121,11 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showPayment, setShowPayment] = useState(false)
+  const [rating, setRating] = useState(null)
 
   useEffect(() => {
-    api.get(`/api/products/${id}/`).then(r => setProduct(r.data)).catch(()=>navigate('/products')).finally(()=>setLoading(false))
+    api.get(`/api/products/${id}/`).then(r => setProduct(r.data)).catch(() => navigate('/products')).finally(() => setLoading(false))
+    api.get(`/api/products/${id}/rating/`).then(r => setRating(r.data)).catch(() => {})
   }, [id])
 
   const handleDelete = async () => {
@@ -139,11 +144,11 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-5xl mx-auto">
-        <button onClick={()=>navigate(-1)} className="flex items-center gap-2 text-gray-500 hover:text-white text-sm mb-6 transition-colors">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-500 hover:text-white text-sm mb-6 transition-colors">
           <ArrowLeft size={16}/> Back
         </button>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Image */}
           <div className="card overflow-hidden aspect-square">
             {product.image_url
@@ -161,6 +166,13 @@ export default function ProductDetailPage() {
               </div>
               <h1 className="font-display text-3xl font-bold mb-2">{product.name}</h1>
               <p className="text-4xl font-display font-bold text-brand-400">${product.price}</p>
+              {/* Rating summary */}
+              {rating && rating.total > 0 && (
+                <div className="flex items-center gap-2 mt-2">
+                  <StarRating value={Math.round(rating.average)} size={16}/>
+                  <span className="text-sm text-gray-400">{rating.average} ({rating.total} reviews)</span>
+                </div>
+              )}
             </div>
 
             <p className="text-gray-400 leading-relaxed text-sm">{product.description}</p>
@@ -188,7 +200,7 @@ export default function ProductDetailPage() {
 
             <div className="flex gap-3 pt-2">
               {canBuy && (
-                <button onClick={()=>setShowPayment(true)} className="btn-primary flex-1 flex items-center justify-center gap-2 py-3.5">
+                <button onClick={() => setShowPayment(true)} className="btn-primary flex-1 flex items-center justify-center gap-2 py-3.5">
                   <ShoppingCart size={18}/> Buy Now
                 </button>
               )}
@@ -213,9 +225,12 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Reviews */}
+        <ReviewsSection productId={id}/>
       </div>
 
-      {showPayment && <PaymentModal product={product} onClose={()=>setShowPayment(false)}/>}
+      {showPayment && <PaymentModal product={product} onClose={() => setShowPayment(false)}/>}
     </div>
   )
 }

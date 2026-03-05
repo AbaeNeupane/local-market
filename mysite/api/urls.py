@@ -6,7 +6,9 @@ from users.stripe_connect import (
     connect_status, disconnect_account, create_login_link
 )
 from orders.tracking_views import order_tracking, update_order_status, add_tracking_info
-from dashboard.admin_views import admin_stats
+from dashboard.admin_views import admin_stats, seller_analytics
+from reviews.views import ProductReviewListCreateView, ReviewDeleteView, product_rating_summary
+from payments.paypal import PayPalCreateOrderView, PayPalCaptureOrderView
 from notifications.service import notify_welcome
 
 router = DefaultRouter()
@@ -27,6 +29,7 @@ urlpatterns = [
 
     # ── Admin ───────────────────────────────────────────────────
     path('admin/stats/',          admin_stats,                   name='api_admin_stats'),
+    path('dashboard/analytics/',  seller_analytics,              name='api_seller_analytics'),
 
     # ── Payments ────────────────────────────────────────────────
     path('payments/stripe/checkout/<int:product_id>/', views.StripeCheckoutView.as_view()),
@@ -45,4 +48,13 @@ urlpatterns = [
     path('orders/<int:order_id>/tracking/',         order_tracking,       name='order_tracking'),
     path('orders/<int:order_id>/update-status/',    update_order_status,  name='order_update_status'),
     path('orders/<int:order_id>/tracking-info/',    add_tracking_info,    name='order_tracking_info'),
+
+    # ── PayPal ──────────────────────────────────────────────────
+    path('payments/paypal/create/<int:product_id>/', PayPalCreateOrderView.as_view(), name='paypal_create'),
+    path('payments/paypal/capture/',                 PayPalCaptureOrderView.as_view(), name='paypal_capture'),
+
+    # ── Reviews ─────────────────────────────────────────────────
+    path('products/<int:product_id>/reviews/',  ProductReviewListCreateView.as_view(), name='product_reviews'),
+    path('reviews/<int:pk>/',                   ReviewDeleteView.as_view(),            name='review_delete'),
+    path('products/<int:product_id>/rating/',   product_rating_summary,                name='product_rating'),
 ]

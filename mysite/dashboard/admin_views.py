@@ -79,3 +79,78 @@ def admin_stats(request):
         'recent_orders': recent_orders_data,
         'top_sellers': top_sellers,
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def seller_analytics(request):
+    """Seller analytics — sales over time + top products."""
+    from django.db.models.functions import TruncDay, TruncMonth
+    from django.utils import timezone
+    import datetime
+
+    user = request.user
+    try:
+        if user.profile.user_type != 'seller':
+            return Response({'error': 'Sellers only.'}, status=403)
+    except:
+        return Response({'error': 'Profile not found.'}, status=400)
+
+    period = request.query_params.get('period', '30d')
+    if period == '7d':
+        since = timezone.now() - datetime.timedelta(days=7)
+        trunc = TruncDay
+    elif period == '90d':
+        since = timezone.now() - datetime.timedelta(days=90)
+        trunc = TruncMonth
+    elif period == '1y':
+        since = timezone.now() - datetime.timedelta(days=365)
+        trunc = TruncMonth
+    else:  # 30d default
+        since = timezone.now() - datetime.timedelta(days=30)
+        trunc = TruncDay
+
+    # Sales over time
+    sales_qs = Order.objects.filter(
+        product__seller=user,
+        status='completed',
+        created_at__gte=since
+    ).annotate(period=trunc('created_at')).values('period').annotate(
+        count=Count('id'),
+        revenue=Sum('seller_amount')
+    ).order_by('period')
+
+    sales_over_time = [{
+        'date': row['period'].strftime('%Y-%m-%d'),
+        'orders': row['count'],
+        'revenue': float(row['revenue'] or 0),
+    } for row in sales_qs]
+
+    # Top products
+    top_products = Product.objects.filter(seller=user).annotate(
+        total_sold=Count('orders', filter=Q(orders__status='completed')),
+        total_revenue=Sum('orders__seller_amount', filter=Q(orders__status='completed')),
+    ).order_by('-total_sold')[:5]
+
+    top_products_data = [{
+        'id': p.id,
+        'name': p.name,
+        'total_sold': p.total_sold or 0,
+        'total_revenue': float(p.total_revenue or 0),
+        'stock': p.stock,
+    } for p in top_products]
+
+    # Summary totals
+    total_revenue_data = Order.objects.filter(
+        product__seller=user, status='completed', created_at__gte=since
+    ).aggregate(revenue=Sum('seller_amount'), orders=Count('id'))
+
+    return Response({
+        'period': period,
+        'summary': {
+            'orders': total_revenue_data['orders'] or 0,
+            'revenue': float(total_revenue_data['revenue'] or 0),
+        },
+        'sales_over_time': sales_over_time,
+        'top_products': top_products_data,
+    })

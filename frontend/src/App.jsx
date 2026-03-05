@@ -13,8 +13,10 @@ import ProfilePage from './pages/ProfilePage'
 import OrdersPage from './pages/OrdersPage'
 import OrderTrackingPage from './pages/OrderTrackingPage'
 import StripeOnboardingPage from './pages/StripeOnboardingPage'
+import AnalyticsPage from './pages/AnalyticsPage'
 import PaymentSuccessPage from './pages/PaymentSuccessPage'
 import PaymentCancelPage from './pages/PaymentCancelPage'
+import PayPalSuccessPage from './pages/PayPalSuccessPage'
 
 function ProtectedRoute({ children, sellerOnly = false }) {
   const { user, loading } = useAuth()
@@ -43,8 +45,10 @@ function AppRoutes() {
         <Route path="/dashboard/stripe" element={<ProtectedRoute sellerOnly><StripeOnboardingPage/></ProtectedRoute>}/>
         <Route path="/dashboard/stripe/return" element={<ProtectedRoute sellerOnly><StripeOnboardingPage/></ProtectedRoute>}/>
         <Route path="/dashboard/stripe/refresh" element={<ProtectedRoute sellerOnly><StripeOnboardingPage/></ProtectedRoute>}/>
+        <Route path="/analytics" element={<ProtectedRoute sellerOnly><AnalyticsPage/></ProtectedRoute>}/>
         <Route path="/payment/success" element={<ProtectedRoute><PaymentSuccessPage/></ProtectedRoute>}/>
         <Route path="/payment/cancel" element={<ProtectedRoute><PaymentCancelPage/></ProtectedRoute>}/>
+        <Route path="/payment/paypal-success" element={<ProtectedRoute><PayPalSuccessPage/></ProtectedRoute>}/>
         <Route path="*" element={<Navigate to="/" replace/>}/>
       </Routes>
     </>
@@ -56,9 +60,9 @@ export default function App() {
     <AuthProvider>
       <AppRoutes/>
       <Toaster position="top-right" toastOptions={{
-        style: { background:'#1f2937', color:'#f9fafb', border:'1px solid rgba(255,255,255,0.1)' },
-        success: { iconTheme: { primary:'#10b981', secondary:'#1f2937' } },
-        error: { iconTheme: { primary:'#ef4444', secondary:'#1f2937' } },
+        style: { background: '#1f2937', color: '#f9fafb', border: '1px solid rgba(255,255,255,0.1)' },
+        success: { iconTheme: { primary: '#10b981', secondary: '#1f2937' } },
+        error: { iconTheme: { primary: '#ef4444', secondary: '#1f2937' } },
       }}/>
     </AuthProvider>
   )

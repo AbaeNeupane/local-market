@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../hooks/useApi'
 import { useAuth } from '../context/AuthContext'
-import { TrendingUp, ShoppingBag, Package, DollarSign, Clock, CheckCircle, Plus, CreditCard, AlertTriangle, ExternalLink } from 'lucide-react'
+import { TrendingUp, BarChart2, ShoppingBag, Package, DollarSign, Clock, CheckCircle, Plus, CreditCard, AlertTriangle, ExternalLink } from 'lucide-react'
 
 const statusColors = {
   pending: 'bg-yellow-900/40 text-yellow-400',
