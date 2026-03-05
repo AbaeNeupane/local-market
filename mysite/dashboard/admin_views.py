@@ -2,7 +2,7 @@
 Admin-only API views powering the custom admin dashboard charts.
 """
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count, Q

@@ -6,7 +6,7 @@ import requests
 import json
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from products.models import Product
